@@ -1,0 +1,87 @@
+;
+; BEDumper.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=BEDumper.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+PnpLockDown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+BEDumper_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+BEDumper.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%BEDumper.DeviceDesc%=BEDumper_Device, Root\BEDumper ; TODO: edit hw-id
+
+[BEDumper_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+BEDumper.sys
+
+;-------------- Service installation
+[BEDumper_Device.NT.Services]
+AddService = BEDumper,%SPSVCINST_ASSOCSERVICE%, BEDumper_Service_Inst
+
+; -------------- BEDumper driver install sections
+[BEDumper_Service_Inst]
+DisplayName    = %BEDumper.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\BEDumper.sys
+
+;
+;--- BEDumper_Device Coinstaller installation ------
+;
+
+[BEDumper_Device.NT.CoInstallers]
+AddReg=BEDumper_Device_CoInstaller_AddReg
+CopyFiles=BEDumper_Device_CoInstaller_CopyFiles
+
+[BEDumper_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[BEDumper_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[BEDumper_Device.NT.Wdf]
+KmdfService =  BEDumper, BEDumper_wdfsect
+[BEDumper_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "BEDumper Installation Disk"
+BEDumper.DeviceDesc = "BEDumper Device"
+BEDumper.SVCDESC = "BEDumper Service"
