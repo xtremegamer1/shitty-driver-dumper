@@ -101,9 +101,10 @@ NTSTATUS dumpModInfo(PVOID moduleBase)
 	OBJECT_ATTRIBUTES fileAttrib;
 	UNICODE_STRING fileObjName;
 	IO_STATUS_BLOCK iostatusblock;
-
+	
+	//Here will be stored the path and base address of the file and the timestamp of the dump
 	RtlInitUnicodeString(&fileObjName,
-		L"\\DosDevices\\C:\\Users\\Richard\\Documents\\Hacking\\dumps\\DumpInfo.txt");
+		L"\\DosDevices\\C:\\DumpInfo.txt");
 
 	InitializeObjectAttributes(&fileAttrib, &fileObjName,
 		OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
@@ -148,8 +149,9 @@ NTSTATUS dumpModules()
 	UNICODE_STRING fileObjName;
 	IO_STATUS_BLOCK iostatusblock;
 
+	//Here will be stored the name of every active module on the PC
 	RtlInitUnicodeString(&fileObjName,
-		L"\\DosDevices\\C:\\Users\\Richard\\Documents\\ActiveDrivers.txt");
+		L"\\DosDevices\\C:\\ActiveDrivers.txt");
 
 	InitializeObjectAttributes(&fileAttrib, &fileObjName,
 		OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
